@@ -1,3 +1,4 @@
+import sys
 import os
 import youtube_dl
 from googleapiclient.discovery import build
@@ -89,8 +90,8 @@ def displaySongsInAPlaylist(songList):
         i = i + 1
 
 
-PLAYLIST_SEARCH = "sunday suspense"
-DIRECTORY = '/tmp/Gaana'
+PLAYLIST_SEARCH = sys.argv[1]
+DIRECTORY = '/tmp/YouTubeDownloads'
 YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 GOOGLE_API_KEY = "AIzaSyApLwmFqEBOS_bxj1DJRv_ULwWO-PKWQLY"
 NO_OF_PLAYLIST_TO_DISPLAY = 6
