@@ -90,8 +90,8 @@ def displaySongsInAPlaylist(songList):
         i = i + 1
 
 
-PLAYLIST_SEARCH = sys.argv[1]
-DIRECTORY = '/tmp/YouTubeDownloads'
+DOWNLOAD_FOLDER = 'YouTubeDownloads'
+DOWNLOAD_LOCATION = '/tmp'
 YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 GOOGLE_API_KEY = "AIzaSyApLwmFqEBOS_bxj1DJRv_ULwWO-PKWQLY"
 NO_OF_PLAYLIST_TO_DISPLAY = 6
@@ -102,11 +102,17 @@ playListTitles = []
 songTitlesOfAllPlaylists = []
 videoIdsOfAllPlaylists = []
 
+PLAYLIST_SEARCH = input("\nPlease enter the search string for your playlist : ")
+print("\nSongs will be downloaded in a newly created folder 'YouTubeDownloads' under '/tmp' by default.")
+change_folder = input("\nDo you want do change the download location to something else (y for yes | anything else for no) : ")
+if change_folder == 'y':
+    DOWNLOAD_LOCATION = input("\nEnter download location : ")
+DIRECTORY = DOWNLOAD_LOCATION + "/" + DOWNLOAD_FOLDER
 createDir(DIRECTORY)
 getYouTubePlaylists()
 getAllSongsFromAllPlayLists()
 displayPlaylistWithItsSongs()
-user_input = input('Which playlist should we download for you : ')
+user_input = input('\nWhich playlist should we download for you : ')
 displaySongsInAPlaylist(songTitlesOfAllPlaylists[int(user_input)-1])
 prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input)-1])
 downloadSongsFromYoutube()
