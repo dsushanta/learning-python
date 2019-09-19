@@ -1,4 +1,3 @@
-import sys
 import os
 import youtube_dl
 from googleapiclient.discovery import build
