@@ -1,3 +1,4 @@
+import concurrent.futures
 import os
 import youtube_dl
 from googleapiclient.discovery import build
@@ -81,13 +82,20 @@ def displayPlaylistWithItsSongs():
 
 def prepareYouTubeSongUrls(videoIds):
     for videoId in videoIds:
-        song_youtube_url_list.append(YOUTUBE_BASE_URL + videoId)
+        songYoutubeURLList.append(YOUTUBE_BASE_URL + videoId)
 
 
-def downloadSongsFromYoutube():
+def downloadSongFromYoutube(song_url):
     with youtube_dl.YoutubeDL(download_options) as dl:
-        for song_url in song_youtube_url_list:
-            dl.download([song_url])
+        return song_url + " : " + str(dl.download([song_url]))
+
+
+def downloadSongs():
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        statusList = executor.map(downloadSongFromYoutube, songYoutubeURLList)
+
+    for status in statusList:
+        print('\n' + status)
 
 
 def displaySongsInAPlaylist(songList):
@@ -105,7 +113,7 @@ GOOGLE_API_KEY = "AIzaSyApLwmFqEBOS_bxj1DJRv_ULwWO-PKWQLY"
 NO_OF_PLAYLIST_TO_DISPLAY = 6
 MAXIMUM_NUMBER_OF_SONGS_TO_DOWNLOAD = 400
 
-song_youtube_url_list = []
+songYoutubeURLList = []
 playListIds = []
 playListTitles = []
 songTitlesOfAllPlaylists = []
@@ -124,4 +132,4 @@ displayPlaylistWithItsSongs()
 user_input = input('\nWhich playlist should we download for you : ')
 displaySongsInAPlaylist(songTitlesOfAllPlaylists[int(user_input)-1])
 prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input)-1])
-downloadSongsFromYoutube()
+downloadSongs()
