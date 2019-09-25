@@ -91,7 +91,7 @@ def downloadSongFromYoutube(song_url):
 
 
 def downloadSongs():
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor(NO_OF_THREADS) as executor:
         statusList = executor.map(downloadSongFromYoutube, songYoutubeURLList)
 
     for status in statusList:
@@ -112,6 +112,7 @@ YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 GOOGLE_API_KEY = "AIzaSyApLwmFqEBOS_bxj1DJRv_ULwWO-PKWQLY"
 NO_OF_PLAYLIST_TO_DISPLAY = 6
 MAXIMUM_NUMBER_OF_SONGS_TO_DOWNLOAD = 400
+NO_OF_THREADS = 50
 
 songYoutubeURLList = []
 playListIds = []
