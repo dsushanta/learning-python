@@ -80,9 +80,12 @@ def displayPlaylistWithItsSongs():
         i = i+1
 
 
-def prepareYouTubeSongUrls(videoIds):
+def prepareYouTubeSongUrls(videoIds, count):
     for videoId in videoIds:
+        if count <= 0:
+            break
         songYoutubeURLList.append(YOUTUBE_BASE_URL + videoId)
+        count = count-1
 
 
 def downloadSongFromYoutube(song_url):
@@ -132,5 +135,6 @@ getAllSongsFromAllPlayLists()
 displayPlaylistWithItsSongs()
 user_input = input('\nWhich playlist should we download for you : ')
 displaySongsInAPlaylist(songTitlesOfAllPlaylists[int(user_input)-1])
-prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input)-1])
+number_of_songs_to_download = input('\nHow many songs to download from the beginning : ')
+prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input)-1], int(number_of_songs_to_download))
 downloadSongs()
