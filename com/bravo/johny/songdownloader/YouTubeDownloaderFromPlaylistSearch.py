@@ -1,7 +1,9 @@
+#!/usr/bin/python3
+
 import concurrent.futures
 import os
-import youtube_dl
 from googleapiclient.discovery import build
+import youtube_dl
 import json
 
 download_options = {
@@ -72,20 +74,25 @@ def displayPlaylistWithItsSongs():
     i = 0
     print("---------------------------------------------------------------------------------------\n")
     while i < NO_OF_PLAYLIST_TO_DISPLAY:
-        print("Playlist number : " + str(i + 1) + "\n")
-        print("Playlist title : " + playListTitles[i] + "\n")
+        print("Playlist number : " + str(i + 1))
+        print("Playlist title : " + playListTitles[i])
         print("Number of songs in the playlist : " + str(len(songTitlesOfAllPlaylists[i])))
-        print("Songs in the playlist : " + str(songTitlesOfAllPlaylists[i]) + "\n")
-        print("---------------------------------------------------------------------------------------\n")
+        print("\n----------------- Songs in the playlist -----------------\n")
+        for song in songTitlesOfAllPlaylists[i]:
+            print("-- " + song)
+        print("\n---------------------------------------------------------------------------------------\n")
         i = i+1
 
 
-def prepareYouTubeSongUrls(videoIds, count):
+def prepareYouTubeSongUrls(videoIds, count, downloadAll):
+    i = 1
     for videoId in videoIds:
         if count <= 0:
             break
-        songYoutubeURLList.append(YOUTUBE_BASE_URL + videoId)
-        count = count-1
+        if str(i) in songNumbers or downloadAll:
+            songYoutubeURLList.append(YOUTUBE_BASE_URL + videoId)
+            count = count-1
+        i = i+1
 
 
 def downloadSongFromYoutube(song_url):
@@ -103,9 +110,9 @@ def downloadSongs():
 
 def displaySongsInAPlaylist(songList):
     i = 1
-    print("The playlist you selected has the following songs -- \n")
+    print("\nThe playlist you selected has the following songs -- \n")
     for song in songList:
-        print(str(i)+". "+song+"\n")
+        print(str(i)+". "+song)
         i = i + 1
 
 
@@ -122,6 +129,7 @@ playListIds = []
 playListTitles = []
 songTitlesOfAllPlaylists = []
 videoIdsOfAllPlaylists = []
+songNumbers = []
 
 PLAYLIST_SEARCH = input("\nPlease enter the search string for your playlist : ")
 print("\nSongs will be downloaded in a newly created folder 'YouTubeDownloads' under '/tmp' by default.")
@@ -135,6 +143,15 @@ getAllSongsFromAllPlayLists()
 displayPlaylistWithItsSongs()
 user_input = input('\nWhich playlist should we download for you : ')
 displaySongsInAPlaylist(songTitlesOfAllPlaylists[int(user_input)-1])
-number_of_songs_to_download = input('\nHow many songs to download from the beginning : ')
-prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input)-1], int(number_of_songs_to_download))
+how_many_songs = input('\nHow many songs to download from the beginning (Leave blank if you want to download all): ')
+if not how_many_songs:
+    number_of_songs_to_download = len(songTitlesOfAllPlaylists[int(user_input)-1])
+else:
+    number_of_songs_to_download = int(how_many_songs)
+song_list_string = input('\nIf you want to download selective songs, enter their numbers separated by space otherwise leave it blank : ')
+songNumbers = song_list_string.strip().split()
+if len(songNumbers) == 0:
+    prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input) - 1], number_of_songs_to_download, True)
+else:
+    prepareYouTubeSongUrls(videoIdsOfAllPlaylists[int(user_input)-1], number_of_songs_to_download, False)
 downloadSongs()
